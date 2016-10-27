@@ -1,0 +1,203 @@
+Blue_Mountains
+1250
+4
+Lake_Evendim 250 0 41 A
+Michel_Delving 270 65 15 B
+White_Towers 225 75 21 C
+Grey_Havens 240 75 21 D
+
+Grey_Havens
+1200
+3
+White_Towers 100 95 8 E
+Sarn_Ford 270 30 12 F
+Blue_Mountains 240 75 21 D
+
+White_Towers
+1150
+4
+Michel_Delving 40 54 7 G
+Hobbiton 70 62 6 H
+Blue_Mountains 225 75 21 C
+Grey_Havens 100 95 8 E
+
+Michel_Delving
+1075
+5
+Hobbiton 35 87 1 I
+Brandy_Hall 80 79 6 J
+Blue_Mountains 270 65 15 B
+White_Towers 40 54 7 G
+Lake_Evendim 110 2 55 K
+
+Lake_Evendim
+1025
+3
+Fornost 85 11 64 L
+Michel_Delving 110 2 55 K
+Blue_Mountains 250 0 41 A
+
+Fornost
+925
+4
+Weathertop 160 23 65 M
+Rivendell 375 14 58 N
+Lake_Evendim 85 11 64 L
+Bree 115 41 38 O
+
+Hobbiton
+1050
+5
+Brandy_Hall 50 73 7 P
+Bree 100 65 9 Q
+Sarn_Ford 130 47 27 R
+White_Towers 70 62 6 H
+Michel_Delving 35 87 1 I
+
+Brandy_Hall
+1000
+3
+Bree 50 68 6 S
+Michel_Delving 80 79 6 J
+Hobbiton 50 73 7 P
+
+Bree
+900
+5
+Fornost 115 41 38 O
+Weathertop 100 36 67 T
+Sarn_Ford 105 40 35 U
+Hobbiton 100 65 9 Q
+Brandy_Hall 50 68 6 S
+
+Sarn_Ford
+975
+6
+Weathertop 180 13 61 V
+Rivendell 400 15 55 W
+Isengard 500 0 72 X
+Grey_Havens 270 30 12 F
+Hobbiton 130 47 27 R
+Bree 105 40 35 U
+
+Weathertop
+825
+4
+Rivendell 230 50 45 Y
+Fornost 160 23 65 M
+Bree 100 36 67 T
+Sarn_Ford 180 13 61 V
+
+Rivendell
+580
+7
+North_Pass 100 2 65 Z
+Caradhras 60 25 69 AA
+Moria 180 15 90 AB
+Isengard 500 12 85 AC
+Fornost 375 14 58 N
+Sarn_Ford 400 15 55 W
+Weathertop 230 50 45 Y
+
+Caradhras
+550
+4
+Carrock 70 0 78 AD
+Gladden_Fields 150 12 65 AE
+Lothlorien 300 32 55 AF
+Rivendell 60 25 69 AA
+
+North_Pass
+500
+2
+Carrock 80 0 75 AG
+Rivendell 100 2 65 Z
+
+Carrock
+450
+6
+Wood_Elves 175 12 64 AH
+Erebor 250 18 75 AI
+Esgaroth 240 24 75 AJ
+Dol_Guldur 300 0 85 AK
+Caradhras 70 0 78 AD
+North_Pass 80 0 75 AG
+
+Gladden_Fields
+500
+5
+Esgaroth 400 0 63 AL
+Dol_Guldur 175 2 82 AM
+Lothlorien 190 18 62 AN
+Caradhras 150 12 65 AE
+Moria 140 16 85 AO
+
+Lothlorien
+660
+5
+Dol_Guldur 180 0 85 AP
+Isengard 240 28 80 AQ
+Caradhras 300 32 55 AF
+Gladden_Fields 190 18 62 AN
+Moria 20 21 72 AR
+
+Isengard
+890
+4
+Sarn_Ford 500 0 72 X
+Rivendell 500 12 85 AC
+Lothlorien 240 28 80 AQ
+Dol_Guldur 390 0 83 AS
+
+Moria
+620
+3
+Gladden_Fields 140 16 85 AO
+Lothlorien 20 21 72 AR
+Rivendell 180 15 90 AB
+
+Dol_Guldur
+500
+4
+Isengard 390 0 83 AS
+Carrock 300 0 85 AK
+Gladden_Fields 175 2 82 AM
+Lothlorien 180 0 85 AP
+
+Wood_Elves
+275
+3
+Dale 90 84 31 AT
+Erebor 100 90 31 AU
+Carrock 175 12 64 AH
+
+Esgaroth
+175
+5
+Dale 40 95 10 AV
+Erebor 50 98 8 AW
+Iron_Hills 175 82 38 AX
+Carrock 240 24 75 AJ
+Gladden_Fields 400 0 63 AL
+
+Erebor
+200
+5
+Iron_Hills 200 91 35 AY
+Carrock 250 18 75 AI
+Wood_Elves 175 12 31 AU
+Esgaroth 50 98 8 AW
+Dale 10 99 5 AZ
+
+Dale
+180
+4
+Erebor 10 99 5 AZ
+Iron_Hills 200 87 35 BA
+Esgaroth 40 95 10 AV
+Wood_Elves 90 84 31 AT
+
+Iron_Hills
+0
+0
+
