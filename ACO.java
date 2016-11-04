@@ -61,7 +61,7 @@ public class ACO{
                     pmap.put(key, pp);
                     pp = new Pheromone(key, 0.0);
                 } else {
-                    pp = pmap.get(key);
+                    pp = (Pheromone) pmap.get(key);
                 }
                 
                 //put the edge into the array
@@ -131,8 +131,8 @@ class Colony{
         int count = 0;
         while(count != 25){
             //for each ant in the ants array make them find end
-            for(Ant a : ants.iterator()){
-                a.findEnd(end);
+            for(Ant a : ants){
+                a.findEnd(end, alpha, beta);
             }
             
             //each ant is now in a state ready for pheromone placement
@@ -142,7 +142,7 @@ class Colony{
             //place new pheromones according to placement function
             
             //reset all ants
-            for(Ant a : ants.iterator()){
+            for(Ant a : ants){
                 a.reset(start);
             }
             
@@ -162,9 +162,9 @@ class Ant{
     
     public Ant(Node start, Map<String, Node> m){
         this.current = start;
-        visisted = new ArrayList<>();
+        visited = new ArrayList<>();
         path = new ArrayList<>();
-        visited.add(curr);
+        visited.add(start);
         pathLength = 0;
     }
     
@@ -184,7 +184,7 @@ class Ant{
             }
                 
             //find the node the edge leads too
-            Node nt = map.get(ed.to);
+            Node nt = map.get(et.to);
 
             //assign current to the node
             current = nt;
@@ -193,15 +193,15 @@ class Ant{
             visited.add(current);
             
             //put the edge into our path taken
-            path.add(ed);
+            path.add(et);
             
             pathLength += et.distance;
         }
     }
     
     //Once all the ants move we have to reset them to the start    
-    public void Reset(Node start){
-        visisted = new ArrayList<>();
+    public void reset(Node start){
+        visited = new ArrayList<>();
         path = new ArrayList<>();
         pathLength = 0;
         this.current = start;
@@ -215,34 +215,72 @@ class Ant{
     private Edge transition(double alpha, double beta){
         //take the list of edges from current
         Edge[] edges = current.edges;
-        
+        Edge result = null;
         //setup an arraylist to dump cities not visited yet
         ArrayList<Edge> valid = new ArrayList<>();
         
         for(int i = 0; i < edges.length; i++){
             //check if the edge at position i has been visited
-            if(!visited.contains(map.get(edge[i].to))){
+            if(!visited.contains(map.get(edges[i].to))){
                 //if not put it in our valid list
-                valid.add(map.get(edge[i].to));
+                valid.add( (edges[i]));
             }
         }
+        
+        
         
         //check if the valid edges are empty
         if(valid.isEmpty()){
             //double back a the current node and rerun transition
-            return null;
+            System.out.println("WRITE THE DOUBLEBACK FUNCTION");
+            System.exit(1);
         }
         
+        //we now have a list of edges to pick from
+        //setup the denominator of the transition function (this is the sum)
+        double denom = 0.0;
+        for(Edge e : valid){
+            denom += getPheromones(e, alpha) + getDistance(e, beta);
+        }
+        
+        //genearte a random double beteween 0 and denom
+        Random r = new Random();
+        double rand = r.nextDouble() * denom;
+        double sum = 0.0;
         //determine the probablity of moving to each nodes using the transition
         //function
-
-        //generate a random number between 0 and the sum of the probability 
-        //and pick the edge
+        Boolean found = false;
+        while(!found){
+            Iterator i = valid.iterator();
+            Edge e = (Edge) i.next();
+            sum += getPheromones(e, alpha) + getDistance(e, beta);
+            if( sum >= rand){
+                    //assign our result and break from the loop
+                    result = e;
+                    found = true;
+            }
+        }
         
         //return the edge
-        return null;
+        return result;
+    }
+    
+    //this function gets tau(a, b) which is the pheromones on the edge
+    //raised to alpha
+    private double getPheromones(Edge e, double a){
+        double p = e.getPheromones();
+        return Math.pow(p,a);
+    }
+    
+    
+    //this function gets h(a, b) which is the distance portion and
+    //raises it to beta
+    private double getDistance(Edge e, double b){
+        double d = e.getDistance();
+        return Math.pow(d,b);
     }
 }
+
 
 //the node object keeps track of a few things about the city
 //1 it keeps track of the city name, the heuristical disance 
@@ -295,6 +333,14 @@ class Edge{
     
     public String toString(){
         return to + " " + distance + " " + roadcon + " " + danger;
+    }
+    
+    public double getPheromones(){
+        return pheromones.value;
+    }
+    
+    public double getDistance(){
+        return distance;
     }
 }
 
