@@ -12,24 +12,26 @@ public class ACO{
         //create my map
         Map<String, Node> map =  new TreeMap<>();
         Map<String, Pheromone> pmap = new TreeMap<>();
-        
-        generateMap(sc, map, pmap);
         System.out.println(pmap);
+        generateMap(sc, map, pmap);
+        
+        //System.out.println(pmap);
         //System.out.println(map);
         
         //at this point the map is assembled we can start doing our
         //stuff
         
-        String start = getStart(map);
+        //String start = getStart(map);
         //String start = "Blue_Mountains";
         //at this point our map is setup and our start point is created WOO
         
-
-        
+        //Colony(double a, double b, double r, double q, Node s, Node e, int numOf, Map m)
+        Colony c = new Colony(1.0, 1.0, .5, .9, map.get("Blue_Mountains"), map.get("Iron_Hills"), 10, map, pmap);
+        c.run();
     }
     
     
-    public static void generateMap(Scanner sc, Map map, Map pmap){
+    public static void generateMap(Scanner sc, Map<String, Node> map, Map<String, Pheromone>  pmap){
         //go through each line in the file
         while(sc.hasNextLine()){
             String name = sc.nextLine();
@@ -56,7 +58,7 @@ public class ACO{
                 double dan = Double.parseDouble(ss.next());
                 
                 String key = ss.next();
-                Pheromone pp = null;
+                Pheromone pp = new Pheromone(key, 1.0);
                 if(!pmap.containsKey(key)){
                     pmap.put(key, pp);
                     pp = new Pheromone(key, 0.0);
@@ -111,9 +113,10 @@ class Colony{
     double beta;          //beta value for transition
     double rho;           //used for placement & evaporation
     double qVal;          //amount of pheromones for the ant
-    Map map;
+    Map<String, Node> map;
+    Map<String, Pheromone> pmap;
     
-    public Colony(double a, double b, double r, double q, Node s, Node e, int numOf, Map m){
+    public Colony(double a, double b, double r, double q, Node s, Node e, int numOf, Map<String, Node> m, Map<String, Pheromone> p){
         //set all the fields to their arranged values
         this.start = s;
         this.end = e;
@@ -121,26 +124,65 @@ class Colony{
         this.beta = b;
         this.rho = r;
         this.qVal = q;
-        this.map = map;
-        
+        this.map = m; 
+        this.pmap = p;
         //make the array of ants
         ants = new ArrayList<>();
+        for(int i = 0; i < numOf; i++){
+            ants.add(new Ant(start, map));
+        }
     }
     
     public void run(){
         int count = 0;
+        System.out.println("Running");
         while(count != 25){
+            //System.out.println(count);
             //for each ant in the ants array make them find end
-            for(Ant a : ants){
+            Iterator anty = ants.iterator();
+            while(anty.hasNext()){
+                Ant a = (Ant) anty.next();
                 a.findEnd(end, alpha, beta);
+                
             }
             
             //each ant is now in a state ready for pheromone placement
-            
-            //evaporate pheromones first
-            
             //place new pheromones according to placement function
+            for(Ant a : ants){
+                //calculate how much pheromone to add the each path
+                double put = qVal/a.pathLength;
+                //go through each edge the and has visited and put
+                //more pheromones
+                for(Edge e : a.path){
+                    e.updatePheromones(put, rho);
+                }   
+            }
             
+            /*
+            anty = ants.iterator();
+            while(anty.hasNext()){
+                Ant a = (Ant) anty.next();
+                double put = qVal/a.pathLength;
+                for(Edge e : a.path){
+                    e.updatePheromones(put, rho);
+                    
+                }   
+            }
+            */
+            
+            Iterator it = (pmap).entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry pair = (Map.Entry)it.next();
+                Pheromone temp = (Pheromone) pair.getValue();
+                temp.evaporate(rho);
+            }
+            //System.out.println(pmap);
+            
+            //go through each ant and get 
+            for(Ant a : ants){
+                //System.out.println(a.path);
+                
+            }
             //reset all ants
             for(Ant a : ants){
                 a.reset(start);
@@ -161,6 +203,7 @@ class Ant{
     Map<String, Node> map;
     
     public Ant(Node start, Map<String, Node> m){
+        map = m;
         this.current = start;
         visited = new ArrayList<>();
         path = new ArrayList<>();
@@ -215,6 +258,7 @@ class Ant{
     private Edge transition(double alpha, double beta){
         //take the list of edges from current
         Edge[] edges = current.edges;
+        
         Edge result = null;
         //setup an arraylist to dump cities not visited yet
         ArrayList<Edge> valid = new ArrayList<>();
@@ -227,7 +271,7 @@ class Ant{
             }
         }
         
-        
+        System.out.print(valid);
         
         //check if the valid edges are empty
         if(valid.isEmpty()){
@@ -242,24 +286,29 @@ class Ant{
         for(Edge e : valid){
             denom += getPheromones(e, alpha) + getDistance(e, beta);
         }
-        
+        System.out.print(denom);
         //genearte a random double beteween 0 and denom
         Random r = new Random();
         double rand = r.nextDouble() * denom;
+        System.out.print(" " + rand + " ");
         double sum = 0.0;
         //determine the probablity of moving to each nodes using the transition
         //function
         Boolean found = false;
+        Iterator i = valid.iterator();
         while(!found){
-            Iterator i = valid.iterator();
+
             Edge e = (Edge) i.next();
+            System.out.println(e);
             sum += getPheromones(e, alpha) + getDistance(e, beta);
+            System.out.print( " |" + sum + "| ");
             if( sum >= rand){
                     //assign our result and break from the loop
                     result = e;
                     found = true;
             }
         }
+        System.out.println(result);
         
         //return the edge
         return result;
@@ -339,6 +388,14 @@ class Edge{
         return pheromones.value;
     }
     
+    public void updatePheromones(double d, double rho){
+        pheromones.update(d*rho);
+    }
+    
+    public void evaporatePheromones(double rho){
+        pheromones.update(rho);
+    }
+    
     public double getDistance(){
         return distance;
     }
@@ -351,6 +408,14 @@ class Pheromone{
     public Pheromone(String s, double d){
         this.name = s;
         this.value = d;
+    }
+    
+    public void update(double d){
+        value = value + d;
+    }
+    
+    public void evaporate(double rho){
+        value = value * rho;
     }
     
     public String toString(){
