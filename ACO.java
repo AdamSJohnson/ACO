@@ -132,6 +132,8 @@ class Colony{
     double qVal;          //amount of pheromones for the ant
     Map<String, Node> map;
     Map<String, Pheromone> pmap;
+    File file;
+    PrintStream ps;
     
     public Colony(double a, double b, double r, double q, Node s, Node e, int numOf, Map<String, Node> m, Map<String, Pheromone> p){
         //set all the fields to their arranged values
@@ -147,6 +149,12 @@ class Colony{
         ants = new ArrayList<>();
         for(int i = 0; i < numOf; i++){
             ants.add(new Ant(start, map));
+        }
+        try{
+            file = new File("Data.txt");
+            ps = new PrintStream(file);
+        } catch(FileNotFoundException err){
+            System.exit(1);
         }
     }
     
@@ -206,14 +214,16 @@ class Colony{
             }
             
             count++;
-            
+            //create an ant to run through the best pheronome path
+            Ant bestRunner = new Ant(start, map);
+            bestRunner.traverseBest(end);
+            //System.out.println("\n\n\n\n\n\n\n\n\n");
+            //System.out.println(bestRunner.path);
+            System.out.print("Path Length    |    " + bestRunner.pathLength);
+            System.out.println(bestRunner.path);
+            ps.println(bestRunner.pathLength);
         }
-        //create an ant to run through the best pheronome path
-        Ant bestRunner = new Ant(start, map);
-        bestRunner.traverseBest(end);
-        //System.out.println("\n\n\n\n\n\n\n\n\n");
-        System.out.println(bestRunner.path);
-        System.out.print("Path Length    |    " + bestRunner.pathLength);
+        
     }
     
 }
@@ -264,41 +274,49 @@ class Ant{
     }
     
     private Edge transitionBest(){
-        //take the list of edges from current
-        Edge[] edges = current.edges;
-        
-        //setup an arraylist to dump cities not visited yet
-        ArrayList<Edge> valid = new ArrayList<>();
-        
-        for(int i = 0; i < edges.length; i++){
-            //check if the edge at position i has been visited
-            if(!visited.contains(map.get(edges[i].to))){
-                //if not put it in our valid list
-                valid.add( (edges[i]));
-            }
-        }
+        int n = 1;
+        while(true){
+            //take the list of edges from current
+            Edge[] edges = current.edges;
 
-        //check if the valid edges are empty
-        if(valid.isEmpty()){
-            System.out.println("YOU FUCKED UP"); //remove lated
-            System.exit(1);
-        }
-        Edge best = null;
-        for(Edge e : valid){
-            if(best == null){
-                best = e;
-            } else {
-                //compare pheromones from best to e
-                if(e.getPheromones() > best.getPheromones()){
-                    best = e;
+            //setup an arraylist to dump cities not visited yet
+            ArrayList<Edge> valid = new ArrayList<>();
+
+            for(int i = 0; i < edges.length; i++){
+                //check if the edge at position i has been visited
+                if(!visited.contains(map.get(edges[i].to))){
+                    //if not put it in our valid list
+                    valid.add( (edges[i]));
                 }
             }
-            
-        }
 
-        
-        //return the edge
-        return best;
+            //check if the valid edges are empty
+            if(valid.isEmpty()){
+                current = visited.get(visited.size() - n++);
+                //remove the last edge
+                if(!path.isEmpty()){
+                    Edge tmp = path.remove(path.size()-1);
+                    this.pathLength -= tmp.distance;
+                }
+                continue;
+            }
+            Edge best = null;
+            for(Edge e : valid){
+                if(best == null){
+                    best = e;
+                } else {
+                    //compare pheromones from best to e
+                    if(e.getPheromones() > best.getPheromones()){
+                        best = e;
+                    }
+                }
+
+            }
+
+
+            //return the edge
+            return best;
+        }
     }
     
     //The find end function will take an end node and go from the start to the
@@ -368,6 +386,11 @@ class Ant{
             //check if the valid edges are empty
             if(valid.isEmpty()){
                 current = visited.get(visited.size() - n++);
+                //remove the last edge
+                if(!path.isEmpty()){
+                    Edge tmp = path.remove(path.size()-1);
+                    this.pathLength -= tmp.distance;
+                }
                 continue;
             }
             
