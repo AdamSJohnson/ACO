@@ -219,9 +219,20 @@ class Colony{
             bestRunner.traverseBest(end);
             //System.out.println("\n\n\n\n\n\n\n\n\n");
             //System.out.println(bestRunner.path);
-            System.out.print("Path Length    |    " + bestRunner.pathLength);
-            System.out.println(bestRunner.path);
+            //System.out.print("Path Length    |    " + bestRunner.pathLength);
+            //System.out.println(bestRunner.path);
             ps.println(bestRunner.pathLength);
+        }
+        Ant bladeRunner = new Ant(start, map);
+        bladeRunner.traverseBest(end);
+        //System.out.println("\n\n\n\n\n\n\n\n\n");
+        //System.out.println(bestRunner.path);
+        //System.out.print("Path Length    |    " + bladeRunner.pathLength);
+        System.out.println("The best path generated after 25 runs is: " );
+        System.out.println("Total Length: " + bladeRunner.pathLength);
+        System.out.println("Blue Mountains");
+        for(Edge e : bladeRunner.path){
+            System.out.println(e.to.replaceAll("_" , " "));
         }
         
     }
@@ -441,7 +452,7 @@ class Ant{
     //this function gets h(a, b) which is the distance portion and
     //raises it to beta
     private double getDistance(Edge e, double b){
-        double d = e.getDistance();
+        double d = 1/e.getDistance();
         return Math.pow(d,b);
     }
 }
